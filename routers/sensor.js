@@ -1,0 +1,1 @@
+// Hoitaa sensorin käsittelyn

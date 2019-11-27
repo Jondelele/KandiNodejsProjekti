@@ -1,0 +1,1 @@
+// Julkisien resurssien routteri eli routtaa tiedostoja(esim kuvia) eikä dataa

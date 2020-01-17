@@ -4,7 +4,7 @@
 // handlereihin/routtereihin pääsee käsiksi vasta kun on onnistuneesti autentikoitunut
 const express = require('express')
 const public = require('./public');
-const api_authentication = require('./authentication');
+const api_authentication = require('./api_authentication');
 
 // Paatason routteri johon ladataan alla kaikki muut routterit, joten
 // se on spesiaalissa asemassa muihin nähden

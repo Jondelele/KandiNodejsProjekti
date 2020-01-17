@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 // Kayttaja menee tai ohjataan autentikoimis sivulle /authenticate
 router.post('/authenticate', (req, res) => {
   // Kayttajan lahettamista HTML parameista otetaan irti username ja password
+  console.log(req.body)
   var userData = {
     username: req.body.username,
     password: req.body.password

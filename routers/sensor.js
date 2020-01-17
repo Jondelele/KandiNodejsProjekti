@@ -1,1 +1,1 @@
-// Hoitaa sensorin käsittelyn
+// Routteri joka hoitaa sensorin käsittelyn

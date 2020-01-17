@@ -1,3 +1,5 @@
+// App.js käynnistää nodejs sovelluksen ja ottaa käyttöön api.js filusta
+// löytyvän routterin rivillä: 'app.use('/api', apiRouter)'
 const apiRouter = require('./routers/api')
 
 const express = require('express')

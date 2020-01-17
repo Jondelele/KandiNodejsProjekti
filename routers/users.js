@@ -17,9 +17,11 @@ var router = express.Router();
 router.get('/', async function(req, res) {
     try {
         var result = await postgresdriver.executeQuery(`SELECT * FROM horses;`)
+        console.log(result)
         return res.json(result)
     } catch (error) {
         console.log("Query ei onnistunut!")
+        console.log(error)
     }
 });
 

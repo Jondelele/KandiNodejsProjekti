@@ -1,6 +1,6 @@
+const config = require('../config')
 
 const { Pool, Client } = require('pg')
-const connectionString = 'postgresql://node:Kollikissa3@localhost:5432/nodekandi'
 // Hyvät ohjeet siihen miten PostgreSQL database laitetaan pystyyn:
 // https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
 // prehtij@JP-HP-Envy:~ $ sudo -u postgres createuser node
@@ -13,7 +13,7 @@ const connectionString = 'postgresql://node:Kollikissa3@localhost:5432/nodekandi
 // postgres=# ALTER USER node WITH SUPERUSER;
 
 const pool = new Pool({
-  connectionString: connectionString,
+  connectionString: config.connectionString,
 })
 
 // Functio 'executeQuery' lopullisesti hoitaa queryn suorittamisen, tätä voidaan kutsua

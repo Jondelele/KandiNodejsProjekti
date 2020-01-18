@@ -1,6 +1,6 @@
 // Käyttäjien CRUD operaatiot ja käyttäjän tietokanta jutut seuraavaksi
 const router = require('express').Router();
-const postgresdriver = require('../database/postgresdriver');
+const db_user = require('../database/db_user');
 const config = require('../config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -20,7 +20,7 @@ router.post('/authenticate', (req, res) => {
   // on palautunut. Tämä siksi että nodejs on asynkronista ja jatkaisi ilman promiseja 
   // ohjelman suorittamista eteenpäin ja kaikki menisi pieleen jos getUserWithPassword
   // kysely ei ehtisi palata
-  postgresdriver.getUserWithPassword(userData).then((userDB) => {
+  db_user.getUserAndPassword(userData).then((userDB) => {
 
   // Tutkitaan bcryptilla että vastaako salis tietokannan vastaavaan hashiin
   if (!userDB) {
@@ -74,7 +74,8 @@ router.use((req, res, next) => {
 
     // Validoidaan kayttajan json web token, json web tokenin avulla
     // Tarkistetaan token. Nextiä kutsutaan vain jos err on null aka kaikki meni hyvin
-    // Jos errissä on jotain heitetään 403
+    // Jos errissä on jotain heitetään 403 ja redirectataan login pagelle, 
+    // koska tokenissa on jotain vikaa
     jwt.verify(bearerToken, config.secret, (err, decoded) => {
       if(err) {
         res.status(403).redirect('/login.html');

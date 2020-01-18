@@ -1,7 +1,7 @@
 
 var person = {};
-var username = 'usernameusernam';
-var password = 'pasworddpasword';
+var username = '';
+var password = '';
 
 (function ($) {
     "use strict";
@@ -58,26 +58,24 @@ var password = 'pasworddpasword';
             if($(input).val().trim() == ''){
                 return false;
             }
-            if (person.username) {
-                person.password = input.value
+            if (username) {
+                password = input.value
                 
-                console.log("username!!!!!!!!!!!!: " + username)
-                console.log("password!!!!!!!!!!!!: " + password)
                 // Ajax lahettaa usernamen ja saliksen backarille
                 if( username != "" && password != "" ){
                     $.ajax({
                         url:'/api/authenticate',
                         type:'POST',
-                        data: { username: "username", password: "password" },
-                        // success:function(response){
-                        //   // Palautetaan clientille index.html sivu
-                        //   window.location = "/index.html";
-                        // }
+                        data: { username: username, password: password },
+                        success:function(response){
+                          // Palautetaan clientille index.html sivu
+                          window.location = "/index.html";
+                        }
                     });
                 }
 
             } else {
-                person.username = input.value
+                username = input.value
             }
         }
     }

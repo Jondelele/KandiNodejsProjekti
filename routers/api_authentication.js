@@ -87,7 +87,7 @@ router.use((req, res, next) => {
 
   } else {
     // Forbidden, eli token ei ollut validi
-    res.status(403).redirect('Login_v20/index.html');
+    res.status(403).redirect('Login_v20/login.html');
   }
 });
 

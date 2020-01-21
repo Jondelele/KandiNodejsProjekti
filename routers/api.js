@@ -17,10 +17,10 @@ router.use(public)
 
 
 // authenticate tahan
-router.use(api_authentication);
+router.use('/', api_authentication);
 
 // privatet tähän alle
-router.use('/user', routerUser) // Paatason routteriin 'routter' ladataan routerUser 
+router.use('/api/user', routerUser) // Paatason routteriin 'routter' ladataan routerUser 
 router.use(private)
 
 module.exports = router;

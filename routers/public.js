@@ -7,7 +7,7 @@ const path = require("path")
 
 // Kertoo appille että public kansiosta löytyy tiedostoja joihin pääsee
 // käsiksi niiden nimen perusteella
-router.use(express.static(path.join(__dirname, '../public')))
+router.use('/', express.static(path.join(__dirname, '../public')))
 
 // router.get((''), () => {
 

@@ -15,6 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 // Pitaa olla ennen api:a koska muuten ei näy sinne
 app.use(cookieParser())
-app.use('/api', apiRouter)
+app.use('/', apiRouter)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

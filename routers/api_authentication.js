@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // Kayttaja menee tai ohjataan autentikoimis sivulle /authenticate
-router.post('/authenticate', (req, res) => {
+router.post('/api/authenticate', (req, res) => {
   // Kayttajan lahettamista HTML parameista otetaan irti username ja password
   console.log(req.body)
   var userData = {
@@ -88,7 +88,7 @@ router.use((req, res, next) => {
 
   } else {
     // Forbidden, eli token ei ollut validi
-    res.status(403).redirect('Login_v20/login.html');
+    res.status(403).redirect('/login.html');
   }
 });
 

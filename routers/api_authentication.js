@@ -46,12 +46,13 @@ router.post('/authenticate', (req, res) => {
     // hän ottaa yhteyttä meidän servereihin jotta kykenemme tunnistamaan että kuka käyttäjä tekee
     // minkäkin requestin. Serverille ei ikinä tallenneta tokenia, se on ainoastaan clientin selaimessa tallessa.
     res.cookie('authCookie', 'Bearer ' + token);
-    return res.json({token});
+    return res.send({token});
+    // res.send({ userData, token })
   });
 
   }).catch((e) => {
     // Palautetaan käyttäjälle virhe jos jokin meni pieleen
-    return res.json(e);
+    return res.send(e);
   });
 
 });

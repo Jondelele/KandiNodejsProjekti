@@ -4,6 +4,7 @@
 // handlereihin/routtereihin pääsee käsiksi vasta kun on onnistuneesti autentikoitunut
 const express = require('express')
 const public = require('./public');
+const private = require('./private');
 const api_authentication = require('./api_authentication');
 
 // Paatason routteri johon ladataan alla kaikki muut routterit, joten
@@ -14,11 +15,12 @@ const routerUser = require('./users')
 // publicit tähän alle
 router.use(public)
 
+
 // authenticate tahan
 router.use(api_authentication);
 
 // privatet tähän alle
 router.use('/user', routerUser) // Paatason routteriin 'routter' ladataan routerUser 
-
+router.use(private)
 
 module.exports = router;

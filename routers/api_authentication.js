@@ -59,12 +59,26 @@ router.post('/api/authenticate', (req, res) => {
 
 // TODO: Logout router tähän, tuhotaan cookie ja redirect to login page.html
 // Logouttia ei ole toteutettu, koska jätin harjoitustyön 2. vaiheen tekemättä
+router.get('/api/logout', (req, res) => {
+  try {
+    console.log('/api/logout ROUTE ALKAA')
+    res.cookie('authCookie', '');
+    res.redirect('/login.html');
+
+  } catch (error) {
+    console.log("Logging out failed!")
+    return res.send(error)
+  }
+})
+
+
 
 // Tutkii onko käyttäjä autentikoitu. Tähän lohkoon mennään vain ja ainoastaan jos käyttäjä
-// koittaa mennä jollekkin sivulle joka vaatii sen että on autentikoitu
-// aka käyttäjällä on validi token
+// koittaa mennä jollekkin sivulle joka vaatii sen että on autentikoitu aka käyttäjällä on 
+// validi token, jos ei ole validia tokenia niin käyttäjä ohjataan kirjautumaan
 router.use((req, res, next) => {
-  // Otetaan json web token irti headereista ja tallennetaan bearerHeader muuttujaan.
+  // Otetaan json web token irti clientin lähettämän requestin headereista 
+  // ja tallennetaan bearerHeader muuttujaan.
   const bearerHeader = req.headers['authorization'] || req.cookies ? req.cookies.authCookie : null;
 
   if(bearerHeader && bearerHeader.split(' ').length == 2){

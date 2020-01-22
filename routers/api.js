@@ -12,14 +12,16 @@ const api_authentication = require('./api_authentication');
 var router = express.Router();
 const routerUser = require('./users')
 
-// publicit tähän alle
+// publicit tähän alle, publiccien järjestyksellä keskenään ei ole mitään merkitystä
+// muuta kuin jos sovellus on todella paljon käytetty niin sitten suosituimmat routet
+// kannattaa laittaa ylös jotta nodejs ei turhaan plaraa niitä läpi joka kerta
 router.use(public)
 
 
 // authenticate tahan
 router.use('/', api_authentication);
 
-// privatet tähän alle
+// privatet tähän alle, privateiden järjestyksellä keskenään ei ole mitään merkitystä
 router.use('/api/user', routerUser) // Paatason routteriin 'routter' ladataan routerUser 
 router.use(private)
 

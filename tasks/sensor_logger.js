@@ -7,8 +7,17 @@ const db_sensor = require('../database/db_sensor')
 var CronJob = require('cron').CronJob;
 new CronJob('* * * * * *', function() {
 
-    readTcn75a.returnDummyData().then((tempData) => {
-        console.log(tempData)
+    readTcn75a.returnDummyData().then((temperature) => {
+        console.log(temperature)
+
+        db_sensor.insertI2CTempData(temperature).then((success) => {
+            if (success) {
+                // console.log
+            }
+        })
+    }).catch((error) => {
+        console.log("Query failed!")
+        console.log(error)
     })
 
 

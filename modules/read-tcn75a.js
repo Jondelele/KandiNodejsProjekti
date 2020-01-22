@@ -51,11 +51,24 @@ function convert(a, b){
 }
 
 // Returns just dummy data for development purposes
-function returnDummyData() {
-    var temp = 8.9; 
-    return temp;
+// function returnDummyData() {
+//     var temp = 8.9; 
+//     return temp;
+// }
+
+module.exports.returnDummyData = function() {
+    // return pool.query(queryStr, queryParams).then((result) => result.rows)
+    // var temp = 20.9;
+    // return temp;
+    // return resolve(temp);
+
+    return new Promise((resolve, reject) => {
+        var temp = 20.9;
+        // return temp;
+        return resolve(temp);
+    })
 }
 
-module.exports = {
-    returnDummyData
-}
+// module.exports = {
+//     returnDummyData
+// }

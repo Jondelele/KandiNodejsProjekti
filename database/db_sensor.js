@@ -25,3 +25,20 @@ module.exports.insertI2CTempData = (temp) => {
         return res.length > 0 ? res[0] : null;
     })
 }
+
+// Funktio joka hakee kannasta 10 viimeisintä temperature tietoa
+module.exports.selectTenLastI2CTempData = () => {
+    const queryString = `
+        SELECT *
+        FROM templogi2c
+        ORDER BY measure_time DESC
+        LIMIT 10;
+    `
+
+    const sqlParams = []
+
+    return postgresdriver.executeQuery(queryString, sqlParams).then((res) => {
+        console.log(res)
+        return res.length > 0 ? res[0] : null
+    })
+}

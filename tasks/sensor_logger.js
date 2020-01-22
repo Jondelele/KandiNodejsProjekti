@@ -6,3 +6,4 @@ const db_sensor = require('../database/db_sensor')
 
 console.log(readTcn75a.returnDummyData())
 console.log(db_sensor.insertI2CTempData(10.1))
+console.log(db_sensor.selectTenLastI2CTempData())

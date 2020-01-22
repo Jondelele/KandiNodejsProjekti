@@ -38,6 +38,6 @@ module.exports.selectTenLastI2CTempData = () => {
     const sqlParams = []
 
     return postgresdriver.executeQuery(queryString, sqlParams).then((res) => {
-        return res.length > 0 ? res[0] : null
+        return res.length > 0 ? res : null
     })
 }

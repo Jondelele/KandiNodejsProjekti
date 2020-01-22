@@ -10,7 +10,7 @@ const port = 3000
 var CronJob = require('cron').CronJob;
 const sensor_logger = require('./tasks/sensor_logger')
 
-new CronJob('* * * * * *', function() {
+new CronJob('* * * * *', function() {
     sensor_logger.startLoggin()
 }, null, true, 'Europe/Helsinki');
 

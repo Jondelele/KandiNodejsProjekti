@@ -11,6 +11,7 @@ const api_authentication = require('./api_authentication');
 // se on spesiaalissa asemassa muihin nähden
 var router = express.Router();
 const routerUser = require('./users')
+const routerSensor = require('./sensor')
 
 // publicit tähän alle, publiccien järjestyksellä keskenään ei ole mitään merkitystä
 // muuta kuin jos sovellus on todella paljon käytetty niin sitten suosituimmat routet
@@ -22,7 +23,8 @@ router.use(public)
 router.use('/', api_authentication);
 
 // privatet tähän alle, privateiden järjestyksellä keskenään ei ole mitään merkitystä
-router.use('/api/user', routerUser) // Paatason routteriin 'routter' ladataan routerUser 
 router.use(private)
+router.use('/api/user', routerUser) // Paatason routteriin 'router' ladataan routerUser 
+router.use('/api/sensor', routerSensor) // Paatason routteriin 'router' ladataan routerSensor
 
 module.exports = router;

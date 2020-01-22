@@ -72,7 +72,7 @@ var password = '';
                         data: { username: username, password: password },
                         success:function(response){
                           // Palautetaan clientille index.html sivu
-                          window.location = "/";
+                          window.location = "/api/sensor/tenlasttemps";
                         }
                     });
                 }

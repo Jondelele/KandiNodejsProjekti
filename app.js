@@ -10,9 +10,12 @@ const port = 3000
 var CronJob = require('cron').CronJob;
 const sensor_logger = require('./tasks/sensor_logger')
 
+sensor_logger.openI2cConnection()
+
 new CronJob('* * * * * *', function() {
     sensor_logger.startLoggin()
 }, null, true, 'Europe/Helsinki');
+
 
 // Express käy läpi järjestyksessä että mikä urli matchaa ja sitten
 // pudottaa "/api" kohdan pois ja etsii apiRouterin

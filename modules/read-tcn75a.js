@@ -26,16 +26,22 @@ const CONF_REG = 0x01;
     
 // });
 
-function ReadTemp(i2c1) {
+module.exports.ReadTemp = function (i2c1) {
     
-    var read_buffer = Buffer.alloc(2);
-    i2c1.i2cRead(TCN75A_ADDR, 2, read_buffer, () => {
-       
-        // console.log("read_buffer:", read_buffer);
-        var temp = convert(read_buffer[0], read_buffer[1]);
+    
+
+    return new Promise((resolve, reject) => {
+      var read_buffer = Buffer.alloc(2);
+      let temp = 0.0;
+    
+      i2c1.i2cRead(TCN75A_ADDR, 2, read_buffer, () => {
         
-        console.log("Temp:", temp.toFixed(4) + "*C");
-    });
+          // console.log("read_buffer:", read_buffer);
+          temp = convert(read_buffer[0], read_buffer[1]);
+          console.log("Temp:", temp.toFixed(4) + "*C");
+          return resolve(temp);
+      });
+    })
 }
 
 function convert(a, b){
@@ -57,3 +63,5 @@ module.exports.returnDummyData = function() {
         return resolve(temp);
     })
 }
+
+

@@ -13,8 +13,13 @@ module.exports.startLoggin = () => {
 
         db_sensor.insertI2CTempData(temperature).then((success) => {
             console.log(success)
+            if(success) {
+                console.log('Temp data db insertion failed!')
+            } else {
+                console.log('Temp data tallennettu!')
+            }
         })
-        
+
     }).catch((error) => {
         console.log("Query failed!")
         console.log(error)

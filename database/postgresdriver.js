@@ -11,6 +11,9 @@ const { Pool, Client } = require('pg')
 // Ja ennen kuin oikeudet oikeasti tulevat voimaan niin node rolesta tulee
 // tehdä superuser seuraavalla komennolla:
 // postgres=# ALTER USER node WITH SUPERUSER;
+// Lopuksi voit vaihtaa tähän uuteen databaseen seuraavasti:
+// postgres=# \connect nodekandi
+// nodekandi=#
 
 const pool = new Pool({
   connectionString: config.connectionString,

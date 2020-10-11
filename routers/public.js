@@ -1,16 +1,9 @@
-// Julkisien resurssien routteri eli routtaa tiedostoja(esim kuvia) eikä dataa ja
-// julkisia web pageja kuten login pagen
-// Moduuli joka asettaa public kansion tiedostot staattisiksi tiedostoiksi
+// private.js handles the routing of the public static files
+
 const router = require('express').Router();
 var express = require('express');
 const path = require("path")
 
-// Kertoo appille että public kansiosta löytyy tiedostoja joihin pääsee
-// käsiksi niiden nimen perusteella
 router.use('/', express.static(path.join(__dirname, '../public')))
-
-// router.get((''), () => {
-
-// });
 
 module.exports = router;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="PostgreSQL - postgresql://localhost:5432/nodekandi" uuid="7f20fc65-18ef-4bf2-9f00-e12c06bb7500">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>postgresql://localhost:5432/nodekandi</jdbc-url>
+    </data-source>
+  </component>
+</project>

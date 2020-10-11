@@ -1,109 +1,90 @@
-// Käyttäjien CRUD operaatiot ja käyttäjän tietokanta jutut seuraavaksi
+// api_authentication.js file handles user authorization and authentication
+
 const router = require('express').Router();
 const db_user = require('../database/db_user');
 const config = require('../config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Kayttaja menee tai ohjataan autentikoimis sivulle /authenticate
+// Route for user authentication
 router.post('/api/authenticate', (req, res) => {
-  // Kayttajan lahettamista HTML parameista otetaan irti username ja password
-  console.log(req.body)
-  var userData = {
-    username: req.body.username,
-    password: req.body.password
-  };
+    // Username and password sent by user is saved to userData object
+    var userData = {
+        username: req.body.username,
+        password: req.body.password
+    };
 
-  // Tietokantakysely jossa haetaan kayttajan tiedot
-  // then ottaa getUserWithPassword funktion palauttaman promisen vastaan
-  // Promiset varmistavat että tästä pisteestä eteenpäin ei mennä ennenkuin tietokantakysely
-  // on palautunut. Tämä siksi että nodejs on asynkronista ja jatkaisi ilman promiseja 
-  // ohjelman suorittamista eteenpäin ja kaikki menisi pieleen jos getUserWithPassword
-  // kysely ei ehtisi palata
-  db_user.getUserAndPassword(userData).then((userDB) => {
+    // User information is fetched from database
+    db_user.getUserAndPassword(userData).then((userDB) => {
 
-  // Tutkitaan bcryptilla että vastaako salis tietokannan vastaavaan hashiin
-  if (!userDB) {
+        // Even if user wasn't found the bcrypt compare is done anyways to make sure that same amount of time passes even in
+        // cases that user wasn't found. This is because of security, because now hackers cannot test which kind of usernames
+        // there is in the database.
+        if (!userDB) {
+            bcrypt.compare("dummy_password123132", "$2b$10$VKVTsw9x2Sjr9629P6RMwumQc9vuMEeKAxcoqM82.s/jSf9TjGzRe").then((resp) => {
+                return res.status(403).json({err: 'User or password not found'});
+            });
+        }
 
-    // Compare tehdään joka tapauksessa jotta aikaa kuluu enemmän. Näin hakkerit eivät saa selville onko username oikea
-    bcrypt.compare("dummy_password123132", "$2b$10$VKVTsw9x2Sjr9629P6RMwumQc9vuMEeKAxcoqM82.s/jSf9TjGzRe").then((resp) => {
-      return res.status(403).json({err: 'User or password not found'});
+        // Checks if the hash made from user given password matches the passwd hash fetched from database
+        // If not, the user gave wrong passwd
+        bcrypt.compare(userData.password, userDB.password_hash).then((resp) => {
+            if (!resp) {
+                // Returns error code if password is wrong
+                return res.status(403).json({err: 'User or password not found'});
+            }
+
+            // If password was correct, an unique jwt token is created for the user
+            const token = jwt.sign({user_id: userDB.user_id}, config.secret, {expiresIn: '15 days'})
+
+            // User is sent a success response including newly made jwt token
+            res.cookie('authCookie', 'Bearer ' + token);
+            return res.send(token);
+        });
+
+    }).catch((e) => {
+        // Error response is sent to the user if something goes wrong
+        return res.send(e);
     });
-
-  }
-
-  bcrypt.compare(userData.password, userDB.password_hash).then((resp) => {
-    if (!resp) {
-      // Password väärin, palautetaan error message
-      return res.status(403).json({err: 'User or password not found'});
-    }
-    // Jos password vastaa hashia niin luodaan käyttäjälle tokeni json web tokenilla, web tokeniin tallennetaan
-    // käyttäjän dataa, kuten id ja username
-    // Tokenin tiedot saadaan myöhemmin käyttöön decoded objectista
-    const token = jwt.sign({user_id: userDB.user_id}, config.secret, {expiresIn: '15 days'})
-  
-    // Lopuksi token palautetaan käyttäjälle takaisin ja käyttäjä lähettää sen meille joka kerta kun 
-    // hän ottaa yhteyttä meidän servereihin jotta kykenemme tunnistamaan että kuka käyttäjä tekee
-    // minkäkin requestin. Serverille ei ikinä tallenneta tokenia, se on ainoastaan clientin selaimessa tallessa.
-    res.cookie('authCookie', 'Bearer ' + token);
-    return res.send(token);
-    // res.send({ userData, token })
-  });
-
-  }).catch((e) => {
-    // Palautetaan käyttäjälle virhe jos jokin meni pieleen
-    return res.send(e);
-  });
 
 });
 
-// TODO: Logout router tähän, tuhotaan cookie ja redirect to login page.html
-// Logouttia ei ole toteutettu, koska jätin harjoitustyön 2. vaiheen tekemättä
+// Logout route for logging the user out by deleting the users cookie, this happens by sending empty cookie to user
 router.get('/api/logout', (req, res) => {
-  try {
-    console.log('/api/logout ROUTE ALKAA')
-    res.cookie('authCookie', '');
-    res.redirect('/login.html');
+    try {
+        res.cookie('authCookie', '');
+        res.redirect('/login.html');
 
-  } catch (error) {
-    console.log("Logging out failed!")
-    return res.send(error)
-  }
+    } catch (error) {
+        return res.send(error)
+    }
 })
 
-
-
-// Tutkii onko käyttäjä autentikoitu. Tähän lohkoon mennään vain ja ainoastaan jos käyttäjä
-// koittaa mennä jollekkin sivulle joka vaatii sen että on autentikoitu aka käyttäjällä on 
-// validi token, jos ei ole validia tokenia niin käyttäjä ohjataan kirjautumaan
+// Route which checks that the user is authenticated if the user tries to access sensitive resources
 router.use((req, res, next) => {
-  // Otetaan json web token irti clientin lähettämän requestin headereista 
-  // ja tallennetaan bearerHeader muuttujaan.
-  const bearerHeader = req.headers['authorization'] || req.cookies ? req.cookies.authCookie : null;
+    // Users token that came together with the request is saved to variable bearerHeader
+    const bearerHeader = req.headers['authorization'] || req.cookies ? req.cookies.authCookie : null;
 
-  if(bearerHeader && bearerHeader.split(' ').length == 2){
-    // Split at the space
-    const bearer = bearerHeader.split(' ');
-    // Get token from array
-    const bearerToken = bearer[1];
+    if (bearerHeader && bearerHeader.split(' ').length == 2) {
+        // Split at the space
+        const bearer = bearerHeader.split(' ');
+        // Get token from array
+        const bearerToken = bearer[1];
 
-    // Validoidaan kayttajan json web token, json web tokenin avulla
-    // Tarkistetaan token. Nextiä kutsutaan vain jos err on null aka kaikki meni hyvin
-    // Jos errissä on jotain heitetään 403 ja redirectataan login pagelle, 
-    // koska tokenissa on jotain vikaa
-    jwt.verify(bearerToken, config.secret, (err, decoded) => {
-      if(err) {
+        // Checks the validity of the jwt token
+        jwt.verify(bearerToken, config.secret, (err, decoded) => {
+            if (err) {
+                res.status(403).redirect('/login.html');
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+
+    } else {
+        // Forbidden error is sent to the user if the token wasn't valid or it didn't exist
         res.status(403).redirect('/login.html');
-      } else {
-        req.decoded = decoded;
-        next();
-      }  
-    });
-
-  } else {
-    // Forbidden, eli token ei ollut validi
-    res.status(403).redirect('/login.html');
-  }
+    }
 });
 
 module.exports = router;

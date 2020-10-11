@@ -1,15 +1,8 @@
-// Hoitaa funktiot jotka lukevat ja kirjoittavat sensori
-// dataa kantaan
-// Tulee ainakin INSERT ja SELECT
+// db_sensor.js file handles database queries related to the sensor and its data
+
 const postgresdriver = require('./postgresdriver');
 
-// CREATE TABLE tempLogI2C(
-//   log_id serial PRIMARY KEY,
-//   temperature DECIMAL NOT NULL,
-//   measure_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-// );
-
-// Funktio joka tallentaa sensorin arvon kantaan
+// Function that documents the temperature to the database
 module.exports.insertI2CTempData = (temp) => {
     const queryString = `
         INSERT INTO tempLogI2C(temperature)
@@ -18,15 +11,14 @@ module.exports.insertI2CTempData = (temp) => {
 
     const sqlParams = [temp];
 
-    // Kutsutaan moduulin postgresdriver funktiota executequery
-    // joka ajaa datan kantaan
+    // DOcuments the measurement to the database
     return postgresdriver.executeQuery(queryString, sqlParams).then((res) => {
         console.log(res)
         return res.length > 0 ? res[0] : null;
     })
 }
 
-// Funktio joka hakee kannasta 10 viimeisintä temperature tietoa
+// Function that fetches the last 10 temperature measurements from the database
 module.exports.selectTenLastI2CTempData = () => {
     const queryString = `
         SELECT *
